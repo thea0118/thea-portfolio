@@ -1,0 +1,932 @@
+:root {
+  --paper: #f8f4ee;
+  --site-bg: #f8f4ee;
+  --paper-soft: #fbfaf6;
+  --ink: #181512;
+  --muted: #8c8478;
+  --line: rgba(24, 21, 18, 0.14);
+  --black: #080807;
+  --white: #f6f1e8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "PortfolioSerif";
+  src:
+    url("assets/fonts/DFLiSongSC24-W5.otf") format("opentype"),
+    local("华康俪宋 Std W5"),
+    local("DFLiSong Std W5"),
+    local("DFLiSongStd-W5"),
+    local("Didot"),
+    local("Bodoni 72"),
+    local("Times New Roman");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PortfolioSong";
+  src:
+    url("assets/fonts/DFLiSongSC24-W5.otf") format("opentype"),
+    local("华康俪宋 Std W5"),
+    local("DFLiSong Std W5"),
+    local("DFLiSongStd-W5"),
+    local("Songti SC"),
+    local("STSong"),
+    local("Noto Serif CJK SC"),
+    local("SimSun");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PortfolioSans";
+  src:
+    url("assets/fonts/HarmonyOS_Sans_Light.ttf") format("truetype"),
+    local("HarmonyOS Sans Light"),
+    local("HarmonyOS Sans"),
+    local("HarmonyOS_Sans_Light"),
+    local("Helvetica Neue");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PortfolioSansRegular";
+  src:
+    url("assets/fonts/HarmonyOS_Sans_Regular.ttf") format("truetype"),
+    local("HarmonyOS Sans Regular"),
+    local("HarmonyOS Sans");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PortfolioSansMedium";
+  src:
+    url("assets/fonts/HarmonyOS_Sans_Medium.ttf") format("truetype"),
+    local("HarmonyOS Sans Medium"),
+    local("HarmonyOS Sans");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PortfolioBody";
+  src:
+    url("assets/fonts/FZLTHProGlobal-Regular.ttf") format("truetype"),
+    local("方正兰亭黑Pro Global"),
+    local("FZLTH Pro Global");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PortfolioBodyLight";
+  src:
+    url("assets/fonts/FZLTHProGlobal-Light.ttf") format("truetype"),
+    local("方正兰亭黑Pro Global Light"),
+    local("FZLTH Pro Global Light");
+  font-display: swap;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--site-bg);
+  font-family: "PortfolioBody", "方正兰亭黑Pro Global", "PingFang SC", "Noto Sans SC", sans-serif;
+}
+
+img,
+video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 22px 38px 24px;
+  color: var(--ink);
+  background: linear-gradient(180deg, rgba(247, 244, 238, 0.94), rgba(247, 244, 238, 0));
+  transition: color 0.26s ease, background 0.26s ease;
+}
+
+.site-header.is-dark {
+  color: var(--white);
+  background: linear-gradient(180deg, rgba(8, 8, 7, 0.78), rgba(8, 8, 7, 0));
+}
+
+.site-header.is-dark small,
+.site-header.is-dark .nav-menu-toggle small {
+  color: rgba(246, 241, 232, 0.62);
+}
+
+.signature {
+  display: inline-flex;
+  align-items: flex-start;
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+}
+
+.site-header nav {
+  display: flex;
+  align-items: flex-start;
+  gap: 34px;
+}
+
+.site-header nav a,
+.nav-menu-toggle {
+  display: grid;
+  gap: 3px;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.site-header nav small,
+.nav-menu-toggle small {
+  color: var(--muted);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.nav-menu {
+  position: relative;
+}
+
+.nav-menu-panel {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 14px);
+  width: 214px;
+  padding: 12px 14px 10px;
+  border: 1px solid rgba(24, 21, 18, 0.1);
+  background: rgba(247, 244, 238, 0.94);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 16px 38px rgba(24, 21, 18, 0.08);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.nav-menu.is-open .nav-menu-panel {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.site-header .nav-menu-panel a {
+  display: grid;
+  grid-template-columns: 1fr 18px;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(24, 21, 18, 0.08);
+  text-align: left;
+  font-family: "PortfolioBodyLight", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  line-height: 1.32;
+  white-space: normal;
+}
+
+.site-header .nav-menu-panel a:last-child {
+  border-bottom: 0;
+}
+
+.site-header .nav-menu-panel a small {
+  align-self: center;
+  font-size: 8px;
+  text-align: right;
+}
+
+.home-hero {
+  position: relative;
+  min-height: 100vh;
+  padding: 116px 38px 54px;
+  display: flex;
+  align-items: center;
+  background: var(--site-bg);
+}
+
+.home-title {
+  width: min(61vw, 920px);
+  max-width: 920px;
+  margin-left: clamp(12px, 3.2vw, 58px);
+  text-align: left;
+}
+
+.home-wordmark {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transform: translateX(-1.2%);
+}
+
+.home-title strong {
+  display: block;
+  margin-top: -48px;
+  padding-left: 0.8%;
+  font-family: "PortfolioBodyLight", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+  font-weight: 300;
+  font-size: clamp(18px, 1.75vw, 27px);
+  letter-spacing: 0.14em;
+}
+
+.home-title p {
+  margin: 64px 0 0;
+  color: var(--ink);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(15px, 1.15vw, 19px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-title span {
+  display: block;
+  margin-top: 72px;
+  padding-left: 0.8%;
+  color: var(--muted);
+  font-family: "PortfolioBodyLight", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+  font-weight: 300;
+  font-size: clamp(13px, 0.99vw, 16.5px);
+  letter-spacing: 0.045em;
+}
+
+.contents-hero {
+  min-height: 100vh;
+  padding: 116px 38px 54px;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.45fr) minmax(420px, 1.55fr);
+  gap: 8vw;
+  align-items: center;
+  background: var(--paper);
+}
+
+.eyebrow {
+  margin: 0 0 28px;
+  color: var(--muted);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.contents-title h2 {
+  margin: 0;
+  font-family: "PortfolioSerif", "华康俪宋 Std W5", Didot, "Bodoni 72", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(34px, 3.6vw, 58px);
+  line-height: 1.05;
+}
+
+.contents-title > span {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.contents-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contents-list li {
+  border-top: 1px solid var(--line);
+}
+
+.contents-list li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.contents-list a {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  column-gap: 24px;
+  padding: 28px 0 30px;
+}
+
+.contents-list .num {
+  color: var(--muted);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+}
+
+.contents-list .title {
+  display: block;
+  font-family: "PortfolioSerif", "华康俪宋 Std W5", serif;
+  font-size: clamp(24px, 2.8vw, 42px);
+  line-height: 1.16;
+}
+
+.contents-list .subtitle {
+  grid-column: 2;
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portfolio-scroll {
+  background: var(--paper-soft);
+}
+
+.chapter-cover {
+  min-height: 100vh;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  background: var(--paper);
+  position: relative;
+  overflow: hidden;
+}
+
+.chapter-cover::before {
+  display: none;
+}
+
+.chapter-intro {
+  position: relative;
+  max-width: 1220px;
+}
+
+.chapter-intro p {
+  margin: 0 0 28px;
+  color: var(--muted);
+  font-size: clamp(56px, 10vw, 156px);
+  line-height: 0.86;
+}
+
+.chapter-intro h2 {
+  margin: 0;
+  font-weight: 400;
+  font-size: clamp(44px, 7vw, 112px);
+  line-height: 1.08;
+}
+
+.chapter-intro span {
+  display: block;
+  margin-top: 20px;
+  color: var(--muted);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-sequence {
+  padding: 0 38px 86px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-soft);
+}
+
+.project-heading {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  width: min(78vw, 1440px);
+  margin: 0 auto 24px;
+  padding: 110px 0 16px;
+  border-bottom: 0;
+}
+
+.project-heading p {
+  display: none;
+}
+
+.project-heading dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(190px, 0.48fr) minmax(420px, 1.52fr);
+  gap: clamp(22px, 4vw, 68px);
+  width: 100%;
+  max-width: none;
+}
+
+.project-heading div {
+  min-width: 0;
+}
+
+.project-heading dt {
+  margin: 0 0 7px;
+  color: var(--muted);
+  font-family: "PortfolioBody", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+  font-size: 9px;
+  line-height: 1;
+}
+
+.project-heading dd {
+  margin: 0;
+  font-family: "PortfolioBody", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+  font-size: clamp(11px, 0.82vw, 13px);
+  line-height: 1.38;
+  min-height: 2.5em;
+}
+
+.project-heading dl > div:nth-child(3) {
+  display: none;
+}
+
+.spread {
+  width: min(78vw, 1440px);
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  background: #ddd7cf;
+  overflow: hidden;
+  box-shadow: 0 18px 60px rgba(24, 21, 18, 0.045);
+}
+
+.spread + .spread {
+  margin-top: 28px;
+}
+
+.video-combo {
+  position: relative;
+  width: min(78vw, 1440px);
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+  transform-origin: center;
+}
+
+.video-combo > img {
+  width: 100%;
+  margin: 0;
+  transition: transform 0.82s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.video-combo.is-video-open > img {
+  transform: translateX(-12%);
+}
+
+.video-stage {
+  position: absolute;
+  right: -5vw;
+  top: 50%;
+  z-index: 2;
+  width: min(15vw, 270px);
+  aspect-ratio: 9 / 16;
+  overflow: visible;
+  background: transparent;
+  box-shadow: 0 18px 48px rgba(24, 21, 18, 0.12);
+  opacity: 0;
+  transform: translate(20px, -50%);
+  pointer-events: none;
+  transition: opacity 0.44s ease 0.08s, transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.video-combo.is-video-open .video-stage {
+  opacity: 1;
+  transform: translate(0, -50%);
+  pointer-events: auto;
+}
+
+.video-stage video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: transparent;
+  cursor: pointer;
+  display: block;
+}
+
+.video-note {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 12px);
+  color: var(--muted);
+  font-family: "PortfolioBodyLight", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 0.28s ease;
+}
+
+.video-combo.is-video-open .video-note {
+  opacity: 1;
+}
+
+.spread.wide {
+  min-height: 0;
+}
+
+.chapter-spread {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  box-shadow: none;
+}
+
+.spread.pair,
+.spread.pair.asym {
+  display: block;
+}
+
+.spread.pair img {
+  height: 100%;
+  min-height: 0;
+}
+
+.spread.pair img + img {
+  display: none;
+}
+
+.reconstructed-page {
+  position: relative;
+  isolation: isolate;
+}
+
+.reconstructed-page .page-base {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.text-cover {
+  position: absolute;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 88% 30%, rgba(255, 255, 255, 0.72), transparent 52%),
+    linear-gradient(90deg, rgba(247, 244, 238, 0.94), rgba(247, 244, 238, 0.86));
+  filter: blur(0.1px);
+}
+
+.title-cover {
+  left: 4.6%;
+  top: 30.8%;
+  width: 50%;
+  height: 31%;
+}
+
+.bottom-cover {
+  left: 4.8%;
+  top: 73.2%;
+  width: 69%;
+  height: 18%;
+}
+
+.proof-title {
+  position: absolute;
+  z-index: 2;
+  left: 5.55%;
+  top: 33.4%;
+  color: var(--ink);
+}
+
+.proof-title h4,
+.proof-title h5,
+.proof-title p,
+.proof-notes h6,
+.proof-notes p {
+  margin: 0;
+}
+
+.proof-title h4,
+.proof-title h5 {
+  font-family: "PortfolioSerif", "华康俪宋 Std W5", serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.proof-title h4 {
+  font-size: clamp(28px, 3.1vw, 58px);
+  line-height: 1.12;
+}
+
+.proof-title h5 {
+  margin-top: 0.16em;
+  font-size: clamp(38px, 5vw, 96px);
+  line-height: 1.02;
+}
+
+.proof-title p {
+  margin-top: 0.55em;
+  color: #b69b68;
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", sans-serif;
+  font-size: clamp(16px, 1.65vw, 32px);
+  letter-spacing: 0;
+}
+
+.proof-notes {
+  position: absolute;
+  z-index: 2;
+  left: 5.55%;
+  top: 75.2%;
+  width: 67%;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr 1.04fr;
+  gap: 3.25%;
+  color: var(--ink);
+}
+
+.proof-notes section {
+  min-height: 7.2vw;
+  padding-right: 7%;
+  border-right: 1px solid rgba(143, 125, 98, 0.5);
+}
+
+.proof-notes section:last-child {
+  border-right: 0;
+}
+
+.proof-notes h6 {
+  color: #b69b68;
+  font-family: "PortfolioSong", "华康俪宋 Std W5", serif;
+  font-weight: 400;
+  font-size: clamp(15px, 1.38vw, 26px);
+  line-height: 1.2;
+}
+
+.proof-notes p {
+  margin-top: 0.6em;
+  font-family: "PortfolioSong", "华康俪宋 Std W5", serif;
+  font-size: clamp(11px, 1.02vw, 20px);
+  line-height: 1.55;
+}
+
+.dark-sequence {
+  color: var(--white);
+  background: var(--black);
+}
+
+.dark-sequence .project-heading {
+  border-bottom-color: rgba(246, 241, 232, 0.22);
+}
+
+.dark-sequence .project-heading p,
+.dark-sequence .project-heading dt,
+.dark-sequence .project-heading dd {
+  color: rgba(246, 241, 232, 0.68);
+}
+
+.quick-index {
+  position: fixed;
+  right: 26px;
+  bottom: 24px;
+  z-index: 40;
+  font-family: "PortfolioBody", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+}
+
+.quick-index-toggle {
+  min-width: 106px;
+  border: 1px solid rgba(24, 21, 18, 0.13);
+  border-radius: 999px;
+  padding: 9px 18px 10px;
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(247, 244, 238, 0.72));
+  backdrop-filter: blur(18px) saturate(1.2);
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(24, 21, 18, 0.08);
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-index-toggle span {
+  display: block;
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.quick-index-toggle small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.quick-index-toggle:hover {
+  transform: translateY(-1px);
+  border-color: rgba(24, 21, 18, 0.24);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(247, 244, 238, 0.82));
+  box-shadow: 0 12px 30px rgba(24, 21, 18, 0.11);
+}
+
+.quick-index-panel {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  width: min(430px, calc(100vw - 52px));
+  max-height: 64vh;
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: rgba(251, 250, 246, 0.95);
+  backdrop-filter: blur(14px);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.quick-index.is-open .quick-index-panel {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.quick-index-panel > a:first-child {
+  display: block;
+  margin-bottom: 18px;
+  color: var(--ink);
+  font-size: 18px;
+}
+
+.quick-index-panel p {
+  margin: 24px 0 10px;
+  color: var(--ink);
+  font-family: "PortfolioBody", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.quick-index-panel a {
+  display: block;
+  padding: 7px 0 9px;
+  border-bottom: 1px solid rgba(24, 21, 18, 0.08);
+  color: var(--muted);
+  font-family: "PortfolioBody", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.quick-index-panel a:hover {
+  color: var(--ink);
+}
+
+.text-page {
+  min-height: 100vh;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  background: var(--site-bg);
+  scroll-margin-top: 0;
+}
+
+.contact {
+  background: var(--site-bg);
+  scroll-margin-top: 0;
+}
+
+.text-page .spread {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  background: var(--site-bg);
+  box-shadow: none;
+}
+
+.chapter-spread {
+  background: var(--site-bg);
+}
+
+.text-page h2 {
+  margin: 0;
+  font-weight: 400;
+  font-size: clamp(44px, 7vw, 104px);
+}
+
+.text-page p {
+  margin: 0;
+  max-width: 780px;
+  color: var(--muted);
+  font-size: clamp(22px, 2.5vw, 38px);
+  line-height: 1.55;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.72s ease, transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+  .site-header {
+    padding: 20px;
+  }
+
+  .site-header nav {
+    gap: 18px;
+  }
+
+  .contents-hero,
+  .project-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .contents-hero {
+    padding: 108px 22px 40px;
+    gap: 52px;
+  }
+
+  .contents-list a {
+    grid-template-columns: 42px 1fr;
+    column-gap: 14px;
+  }
+
+  .chapter-cover,
+  .project-sequence {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .chapter-cover,
+  .text-page {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .project-sequence {
+    padding-top: 34px;
+    padding-bottom: 34px;
+  }
+
+  .spread {
+    width: min(100%, 1920px);
+  }
+
+  .chapter-spread,
+  .text-page .spread {
+    width: 100vw;
+  }
+
+  .project-heading {
+    gap: 24px;
+    margin-bottom: 26px;
+    width: 100%;
+    padding-top: 92px;
+  }
+
+  .project-heading dl {
+    grid-template-columns: 1fr;
+    width: auto;
+    max-width: none;
+    gap: 18px;
+    margin-left: 0;
+  }
+
+  .project-heading dd {
+    min-height: 0;
+  }
+
+  .video-combo {
+    width: 100%;
+  }
+
+  .video-combo.is-video-open > img {
+    transform: translateX(-10%);
+  }
+
+  .video-stage {
+    left: auto;
+    right: -1%;
+    width: min(30vw, 220px);
+  }
+
+  .quick-index {
+    right: 18px;
+    bottom: 18px;
+  }
+}
