@@ -54,13 +54,17 @@ const deferredImages = document.querySelectorAll("img[data-src]");
 
 function hydrateImage(image) {
   if (!image || image.getAttribute("src")) return;
+  const mobileSrc = image.dataset.srcset?.split(",")[0]?.trim().split(" ")[0];
+  const fallbackSrc = window.matchMedia("(max-width: 900px)").matches && mobileSrc
+    ? mobileSrc
+    : image.dataset.src;
   if (image.dataset.srcset) {
     image.setAttribute("srcset", image.dataset.srcset);
   }
   if (image.dataset.sizes) {
     image.setAttribute("sizes", image.dataset.sizes);
   }
-  image.setAttribute("src", image.dataset.src);
+  image.setAttribute("src", fallbackSrc);
 }
 
 function hydrateScope(scope) {
