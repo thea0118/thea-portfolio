@@ -120,7 +120,7 @@ if ("IntersectionObserver" in window && !prefersReducedMotion.matches) {
 
 function setDirectoryMode() {
   document.body.classList.add("is-directory-mode");
-  document.body.classList.remove("is-project-mode", "is-all-projects-mode");
+  document.body.classList.remove("is-project-mode", "is-all-projects-mode", "is-single-project-mode");
   workItems.forEach((item) => item.classList.remove("work-hidden"));
   closeMenus();
   syncHeaderTheme();
@@ -128,6 +128,7 @@ function setDirectoryMode() {
 
 function setAllProjectsMode() {
   document.body.classList.remove("is-directory-mode");
+  document.body.classList.remove("is-single-project-mode");
   document.body.classList.add("is-project-mode", "is-all-projects-mode");
   workItems.forEach((item) => item.classList.remove("work-hidden"));
   hydrateScope(document.getElementById("chapter-01"));
@@ -137,7 +138,7 @@ function setAllProjectsMode() {
 }
 
 function setChapterMode(chapterId) {
-  document.body.classList.remove("is-directory-mode", "is-all-projects-mode");
+  document.body.classList.remove("is-directory-mode", "is-all-projects-mode", "is-single-project-mode");
   document.body.classList.add("is-project-mode");
 
   workItems.forEach((item) => {
@@ -155,7 +156,7 @@ function setChapterMode(chapterId) {
 
 function setSingleProjectMode(projectId) {
   document.body.classList.remove("is-directory-mode", "is-all-projects-mode");
-  document.body.classList.add("is-project-mode");
+  document.body.classList.add("is-project-mode", "is-single-project-mode");
 
   workItems.forEach((item) => {
     item.classList.toggle("work-hidden", item.id !== projectId);
@@ -215,7 +216,9 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     if (!target && targetId !== "works") return;
 
     event.preventDefault();
-    navigateTo(targetId, true, { singleProject: link.classList.contains("project-thumb") });
+    navigateTo(targetId, true, {
+      singleProject: projectToChapter.has(targetId) && !link.dataset.chapterLink,
+    });
   });
 });
 

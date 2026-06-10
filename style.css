@@ -534,6 +534,10 @@ body.is-project-mode #contents {
   display: none;
 }
 
+body.is-single-project-mode #contact {
+  display: none;
+}
+
 .work-hidden {
   display: none;
 }
