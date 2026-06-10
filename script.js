@@ -439,10 +439,6 @@ if (quickIndex && quickIndexToggle) {
     event.stopPropagation();
   });
 
-  document.addEventListener("click", () => {
-    closeMenus();
-  });
-
   quickIndex.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => {
       quickIndex.classList.remove("is-open");
@@ -450,6 +446,11 @@ if (quickIndex && quickIndexToggle) {
     });
   });
 }
+
+document.addEventListener("pointerdown", (event) => {
+  if (navMenu?.contains(event.target) || quickIndex?.contains(event.target)) return;
+  closeMenus();
+}, true);
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
