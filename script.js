@@ -9,7 +9,7 @@ const chapters = [
     id: "chapter-02",
     cover: "chapter-02",
     firstProject: "grain-rain",
-    projects: ["grain-rain", "olay-cny", "ecommerce-ued", "prox-detail", "mentholatum", "members-mark"],
+    projects: ["grain-rain", "olay-cny", "ecommerce-ued", "prox-detail", "mentholatum", "mentholatum-shampoo", "members-mark"],
   },
   {
     id: "chapter-03",
@@ -169,7 +169,7 @@ function setSingleProjectMode(projectId) {
 
 function modeForTarget(targetId) {
   if (projectToChapter.has(targetId)) {
-    return { mode: "chapter", chapterId: projectToChapter.get(targetId), scrollId: targetId };
+    return { mode: "project", chapterId: projectToChapter.get(targetId), scrollId: targetId };
   }
 
   if (coverToChapter.has(targetId)) {
@@ -187,7 +187,9 @@ function modeForTarget(targetId) {
 function navigateTo(targetId, shouldPushState = true, options = {}) {
   const route = modeForTarget(targetId);
 
-  if (options.singleProject && projectToChapter.has(targetId)) {
+  if (options.chapterMode && projectToChapter.has(targetId)) {
+    setChapterMode(projectToChapter.get(targetId));
+  } else if (route.mode === "project") {
     setSingleProjectMode(targetId);
   } else if (route.mode === "all") {
     setAllProjectsMode();
@@ -199,7 +201,11 @@ function navigateTo(targetId, shouldPushState = true, options = {}) {
 
   const scrollTarget = document.getElementById(route.scrollId);
   if (scrollTarget) {
-    glideTo(scrollTarget);
+    if (route.mode === "directory") {
+      requestAnimationFrame(() => glideTo(scrollTarget));
+    } else {
+      glideTo(scrollTarget);
+    }
   }
 
   if (shouldPushState) {
@@ -217,7 +223,7 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
 
     event.preventDefault();
     navigateTo(targetId, true, {
-      singleProject: projectToChapter.has(targetId) && !link.dataset.chapterLink,
+      chapterMode: Boolean(link.dataset.chapterLink),
     });
   });
 });

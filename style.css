@@ -534,12 +534,12 @@ body.is-project-mode #contents {
   display: none;
 }
 
-body.is-single-project-mode #contact {
+body.is-project-mode:not(.is-all-projects-mode) #contact {
   display: none;
 }
 
 .work-hidden {
-  display: none;
+  display: none !important;
 }
 
 .spread img:not([src]) {
@@ -1235,11 +1235,15 @@ body.is-directory-mode .quick-index {
   }
 
   .contents-title h2 {
-    font-size: 32px;
+    font-size: 28px;
+  }
+
+  .contents-title > span {
+    font-size: 10px;
   }
 
   .chapter-directory {
-    gap: 36px;
+    gap: 32px;
   }
 
   .view-all-projects {
@@ -1252,38 +1256,47 @@ body.is-directory-mode .quick-index {
   }
 
   .chapter-link {
-    grid-template-columns: 34px 1fr;
-    column-gap: 12px;
+    grid-template-columns: 30px 1fr;
+    column-gap: 10px;
   }
 
   .chapter-link > span:last-child {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 10px;
   }
 
   .chapter-link strong {
-    font-size: 23px;
+    font-size: 20px;
   }
 
   .chapter-link small {
-    font-size: 9px;
+    font-size: 8px;
+    line-height: 1.35;
   }
 
   .chapter-link em {
-    grid-column: 1;
-    grid-row: auto;
-    justify-self: start;
-    margin-top: 8px;
-    font-size: 10px;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    justify-self: end;
+    margin-top: 0;
+    text-align: right;
+    font-size: 9px;
   }
 
   .chapter-link em b {
-    font-size: 8px;
+    font-size: 7px;
+  }
+
+  .chapter-link .num,
+  .view-all-projects .num {
+    font-size: 12px;
   }
 
   .project-thumb-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 13px 10px;
-    padding-left: 46px;
+    padding-left: 40px;
   }
 
   .project-thumb {
@@ -1322,7 +1335,13 @@ body.is-directory-mode .quick-index {
   }
 
   .contact .spread {
-    aspect-ratio: 1080 / 1350;
+    aspect-ratio: 1080 / 720;
+    width: 92vw;
+  }
+
+  .contact {
+    min-height: 100vh;
+    min-height: 100svh;
   }
 
   .chapter-spread img,
