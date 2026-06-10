@@ -9,7 +9,7 @@ const chapters = [
     id: "chapter-02",
     cover: "chapter-02",
     firstProject: "grain-rain",
-    projects: ["grain-rain", "olay-cny", "ecommerce-ued", "prox-detail", "mentholatum", "mentholatum-shampoo", "members-mark"],
+    projects: ["grain-rain", "olay-cny", "ecommerce-ued", "prox-detail", "mentholatum", "members-mark"],
   },
   {
     id: "chapter-03",
@@ -49,8 +49,15 @@ const navMenu = document.querySelector(".nav-menu");
 const navMenuToggle = document.querySelector(".nav-menu-toggle");
 const siteHeader = document.querySelector(".site-header");
 const works = document.getElementById("works");
+const contentsTopButton = document.querySelector(".contents-top-button");
+const backToDirectory = document.querySelector("[data-directory-return]");
 const workItems = document.querySelectorAll(".chapter-cover, .project-sequence");
 const deferredImages = document.querySelectorAll("img[data-src]");
+let lastDirectoryScroll = null;
+
+function isCompactViewport() {
+  return window.matchMedia("(max-width: 560px)").matches;
+}
 
 function hydrateImage(image) {
   if (!image || image.getAttribute("src")) return;
@@ -124,6 +131,7 @@ function setDirectoryMode() {
   workItems.forEach((item) => item.classList.remove("work-hidden"));
   closeMenus();
   syncHeaderTheme();
+  syncContentsTopButton();
 }
 
 function setAllProjectsMode() {
@@ -135,6 +143,7 @@ function setAllProjectsMode() {
   hydrateScope(document.getElementById("olay-white-bottle"));
   closeMenus();
   syncHeaderTheme();
+  syncContentsTopButton();
 }
 
 function setChapterMode(chapterId) {
@@ -152,6 +161,7 @@ function setChapterMode(chapterId) {
 
   closeMenus();
   syncHeaderTheme();
+  syncContentsTopButton();
 }
 
 function setSingleProjectMode(projectId) {
@@ -165,6 +175,17 @@ function setSingleProjectMode(projectId) {
   hydrateScope(document.getElementById(projectId));
   closeMenus();
   syncHeaderTheme();
+  syncContentsTopButton();
+}
+
+function syncContentsTopButton() {
+  const contents = document.getElementById("contents");
+  if (!contents) return;
+  const rect = contents.getBoundingClientRect();
+  const isActive = document.body.classList.contains("is-directory-mode") &&
+    rect.top < window.innerHeight &&
+    rect.bottom > 0;
+  document.body.classList.toggle("is-contents-active", isActive);
 }
 
 function modeForTarget(targetId) {
@@ -201,7 +222,9 @@ function navigateTo(targetId, shouldPushState = true, options = {}) {
 
   const scrollTarget = document.getElementById(route.scrollId);
   if (scrollTarget) {
-    if (route.mode === "directory") {
+    if (isCompactViewport() && route.mode !== "directory") {
+      jumpTo(scrollTarget);
+    } else if (route.mode === "directory") {
       requestAnimationFrame(() => glideTo(scrollTarget));
     } else {
       glideTo(scrollTarget);
@@ -222,11 +245,43 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     if (!target && targetId !== "works") return;
 
     event.preventDefault();
+
+    if (link === backToDirectory) {
+      setDirectoryMode();
+      requestAnimationFrame(() => {
+        const contentsTop = document.getElementById("contents")?.offsetTop || 0;
+        window.scrollTo(0, lastDirectoryScroll ?? contentsTop);
+      });
+      if (history.pushState) {
+        history.pushState(null, "", "#contents");
+      }
+      return;
+    }
+
+    if (
+      document.body.classList.contains("is-directory-mode") &&
+      link.closest("#contents") &&
+      projectToChapter.has(targetId) &&
+      !link.dataset.chapterLink
+    ) {
+      lastDirectoryScroll = window.scrollY;
+    } else if (link.closest(".project-index-menu") && projectToChapter.has(targetId)) {
+      lastDirectoryScroll = document.getElementById("contents")?.offsetTop || 0;
+    }
+
     navigateTo(targetId, true, {
       chapterMode: Boolean(link.dataset.chapterLink),
     });
   });
 });
+
+if (contentsTopButton) {
+  contentsTopButton.addEventListener("click", () => {
+    const contents = document.getElementById("contents");
+    if (!contents) return;
+    glideTo(contents);
+  });
+}
 
 function glideTo(target) {
   const current = window.scrollY;
@@ -267,6 +322,14 @@ function glideTo(target) {
   requestAnimationFrame(tick);
 }
 
+function jumpTo(target) {
+  const current = window.scrollY;
+  const targetTop = target.getBoundingClientRect().top + current;
+  const isProjectMode = document.body.classList.contains("is-project-mode");
+  const noOffset = target.classList.contains("text-page") || target.classList.contains("chapter-cover") || isProjectMode;
+  window.scrollTo(0, Math.max(0, targetTop - (noOffset ? 0 : 64)));
+}
+
 document.querySelectorAll(".video-combo").forEach((combo) => {
   const video = combo.querySelector("video");
 
@@ -294,14 +357,15 @@ if ("IntersectionObserver" in window) {
         if (!video || combo.dataset.played === "true") return;
 
         combo.dataset.played = "true";
+        const delay = isCompactViewport() ? 220 : 980;
         window.setTimeout(() => {
           combo.classList.add("is-video-open");
           video.currentTime = 0;
           video.play().catch(() => {});
-        }, prefersReducedMotion.matches ? 0 : 520);
+        }, prefersReducedMotion.matches ? 0 : delay);
       });
     },
-    { threshold: 0.58 }
+    { threshold: isCompactViewport() ? 0.36 : 0.78 }
   );
 
   document.querySelectorAll(".video-combo").forEach((combo) => {
@@ -324,8 +388,14 @@ function syncHeaderTheme() {
   siteHeader.classList.toggle("is-dark", isDark);
 }
 
-window.addEventListener("scroll", syncHeaderTheme, { passive: true });
-window.addEventListener("resize", syncHeaderTheme);
+window.addEventListener("scroll", () => {
+  syncHeaderTheme();
+  syncContentsTopButton();
+}, { passive: true });
+window.addEventListener("resize", () => {
+  syncHeaderTheme();
+  syncContentsTopButton();
+});
 
 function closeMenus() {
   if (navMenu && navMenuToggle) {
