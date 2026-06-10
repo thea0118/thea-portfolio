@@ -54,6 +54,12 @@ const deferredImages = document.querySelectorAll("img[data-src]");
 
 function hydrateImage(image) {
   if (!image || image.getAttribute("src")) return;
+  if (image.dataset.srcset) {
+    image.setAttribute("srcset", image.dataset.srcset);
+  }
+  if (image.dataset.sizes) {
+    image.setAttribute("sizes", image.dataset.sizes);
+  }
   image.setAttribute("src", image.dataset.src);
 }
 
