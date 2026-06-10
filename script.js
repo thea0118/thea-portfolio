@@ -153,6 +153,19 @@ function setChapterMode(chapterId) {
   syncHeaderTheme();
 }
 
+function setSingleProjectMode(projectId) {
+  document.body.classList.remove("is-directory-mode", "is-all-projects-mode");
+  document.body.classList.add("is-project-mode");
+
+  workItems.forEach((item) => {
+    item.classList.toggle("work-hidden", item.id !== projectId);
+  });
+
+  hydrateScope(document.getElementById(projectId));
+  closeMenus();
+  syncHeaderTheme();
+}
+
 function modeForTarget(targetId) {
   if (projectToChapter.has(targetId)) {
     return { mode: "chapter", chapterId: projectToChapter.get(targetId), scrollId: targetId };
@@ -170,10 +183,12 @@ function modeForTarget(targetId) {
   return { mode: "directory", scrollId: targetId || "contents" };
 }
 
-function navigateTo(targetId, shouldPushState = true) {
+function navigateTo(targetId, shouldPushState = true, options = {}) {
   const route = modeForTarget(targetId);
 
-  if (route.mode === "all") {
+  if (options.singleProject && projectToChapter.has(targetId)) {
+    setSingleProjectMode(targetId);
+  } else if (route.mode === "all") {
     setAllProjectsMode();
   } else if (route.mode === "chapter") {
     setChapterMode(route.chapterId);
@@ -200,7 +215,7 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     if (!target && targetId !== "works") return;
 
     event.preventDefault();
-    navigateTo(targetId);
+    navigateTo(targetId, true, { singleProject: link.classList.contains("project-thumb") });
   });
 });
 

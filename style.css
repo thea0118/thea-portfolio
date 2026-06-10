@@ -481,6 +481,16 @@ a {
   white-space: nowrap;
 }
 
+.chapter-link em b {
+  display: block;
+  margin-top: 3px;
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .project-thumb-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1262,6 +1272,10 @@ body.is-directory-mode .quick-index {
     font-size: 10px;
   }
 
+  .chapter-link em b {
+    font-size: 8px;
+  }
+
   .project-thumb-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 13px 10px;
@@ -1300,7 +1314,7 @@ body.is-directory-mode .quick-index {
   }
 
   .about-intro .spread {
-    aspect-ratio: 1080 / 1780;
+    aspect-ratio: 1080 / 1900;
   }
 
   .contact .spread {
