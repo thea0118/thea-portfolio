@@ -89,6 +89,7 @@
 
 html {
   scroll-behavior: auto;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -178,7 +179,7 @@ a {
 
 .nav-menu-panel {
   position: absolute;
-  left: 0;
+  right: 0;
   top: calc(100% + 14px);
   width: 214px;
   padding: 12px 14px 10px;
@@ -196,6 +197,15 @@ a {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+.nav-menu-toggle:focus-visible,
+.quick-index-toggle:focus-visible,
+.site-header a:focus-visible,
+.quick-index-panel a:focus-visible,
+.contents-list a:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 5px;
 }
 
 .site-header .nav-menu-panel a {
@@ -225,6 +235,7 @@ a {
 .home-hero {
   position: relative;
   min-height: 100vh;
+  min-height: 100svh;
   padding: 116px 38px 54px;
   display: flex;
   align-items: center;
@@ -277,6 +288,7 @@ a {
 
 .contents-hero {
   min-height: 100vh;
+  min-height: 100svh;
   padding: 116px 38px 54px;
   display: grid;
   grid-template-columns: minmax(220px, 0.45fr) minmax(420px, 1.55fr);
@@ -362,6 +374,7 @@ a {
 
 .chapter-cover {
   min-height: 100vh;
+  min-height: 100svh;
   padding: 0;
   display: flex;
   align-items: stretch;
@@ -546,6 +559,7 @@ a {
 .chapter-spread {
   width: 100vw;
   height: 100vh;
+  height: 100svh;
   max-width: none;
   box-shadow: none;
 }
@@ -793,6 +807,7 @@ a {
 
 .text-page {
   min-height: 100vh;
+  min-height: 100svh;
   padding: 0;
   display: flex;
   align-items: stretch;
@@ -808,6 +823,7 @@ a {
 .text-page .spread {
   width: 100vw;
   height: 100vh;
+  height: 100svh;
   max-width: none;
   background: var(--site-bg);
   box-shadow: none;
@@ -892,6 +908,11 @@ a {
     width: 100vw;
   }
 
+  .chapter-spread img,
+  .text-page .spread img {
+    object-fit: contain;
+  }
+
   .project-heading {
     gap: 24px;
     margin-bottom: 26px;
@@ -928,5 +949,150 @@ a {
   .quick-index {
     right: 18px;
     bottom: 18px;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    padding: 16px 14px;
+  }
+
+  .signature {
+    font-size: 12px;
+  }
+
+  .site-header nav {
+    gap: 12px;
+  }
+
+  .site-header nav a,
+  .nav-menu-toggle {
+    font-size: 12px;
+  }
+
+  .site-header nav small,
+  .nav-menu-toggle small {
+    display: none;
+  }
+
+  .nav-menu-panel {
+    left: auto;
+    right: -54px;
+    width: min(260px, calc(100vw - 28px));
+  }
+
+  .home-hero {
+    min-height: 92vh;
+    min-height: 92svh;
+    padding: 92px 22px 42px;
+  }
+
+  .home-title {
+    width: min(86vw, 920px);
+    margin-left: 0;
+  }
+
+  .home-title strong {
+    margin-top: -18px;
+  }
+
+  .home-title span {
+    margin-top: 48px;
+    line-height: 1.7;
+  }
+
+  .contents-list a {
+    padding: 22px 0 24px;
+  }
+
+  .contents-list .subtitle {
+    line-height: 1.45;
+  }
+
+  .project-sequence {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .chapter-cover,
+  .text-page {
+    min-height: auto;
+    padding: 84px 0 56px;
+    align-items: center;
+  }
+
+  .chapter-spread,
+  .text-page .spread {
+    width: 100vw;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .chapter-spread img,
+  .text-page .spread img {
+    height: auto;
+    object-fit: contain;
+  }
+
+  .project-heading {
+    padding-top: 76px;
+  }
+
+  .spread + .spread {
+    margin-top: 16px;
+  }
+
+  .video-combo.is-video-open > img {
+    transform: none;
+  }
+
+  .video-stage {
+    right: 4%;
+    width: min(34vw, 150px);
+    box-shadow: 0 12px 30px rgba(24, 21, 18, 0.14);
+  }
+
+  .quick-index {
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .quick-index-toggle {
+    min-width: 92px;
+    padding: 8px 14px 9px;
+  }
+
+  .quick-index-toggle span {
+    font-size: 12px;
+  }
+
+  .quick-index-toggle small {
+    font-size: 8px;
+  }
+
+  .quick-index-panel {
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    bottom: 68px;
+    width: auto;
+    max-height: 68vh;
+    padding: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }
