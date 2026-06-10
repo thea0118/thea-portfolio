@@ -201,9 +201,13 @@ a {
 
 .nav-menu-toggle:focus-visible,
 .quick-index-toggle:focus-visible,
+.back-to-directory:focus-visible,
 .site-header a:focus-visible,
 .quick-index-panel a:focus-visible,
-.contents-list a:focus-visible {
+.contents-list a:focus-visible,
+.chapter-link:focus-visible,
+.project-thumb:focus-visible,
+.view-all-projects:focus-visible {
   outline: 1px solid currentColor;
   outline-offset: 5px;
 }
@@ -289,11 +293,11 @@ a {
 .contents-hero {
   min-height: 100vh;
   min-height: 100svh;
-  padding: 116px 38px 54px;
+  padding: 116px 38px 76px;
   display: grid;
-  grid-template-columns: minmax(220px, 0.45fr) minmax(420px, 1.55fr);
-  gap: 8vw;
-  align-items: center;
+  grid-template-columns: minmax(180px, 0.34fr) minmax(560px, 1.66fr);
+  gap: 6vw;
+  align-items: start;
   background: var(--paper);
 }
 
@@ -368,8 +372,149 @@ a {
   text-transform: uppercase;
 }
 
+.chapter-directory {
+  display: grid;
+  gap: 54px;
+}
+
+.view-all-projects {
+  display: inline-grid;
+  justify-self: start;
+  gap: 5px;
+  padding: 12px 20px 13px;
+  border: 1px solid rgba(24, 21, 18, 0.18);
+  border-radius: 999px;
+  background: rgba(251, 250, 246, 0.62);
+  font-family: "PortfolioBody", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+}
+
+.view-all-projects span {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.view-all-projects small {
+  color: var(--muted);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.chapter-group {
+  display: grid;
+  gap: 18px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.chapter-link {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  column-gap: 22px;
+  align-items: start;
+}
+
+.chapter-link .num {
+  color: var(--muted);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+}
+
+.chapter-link strong {
+  display: block;
+  font-family: "PortfolioSerif", "华康俪宋 Std W5", serif;
+  font-size: clamp(24px, 2.4vw, 38px);
+  font-weight: 400;
+  line-height: 1.14;
+}
+
+.chapter-link small {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-family: "PortfolioSans", "HarmonyOS Sans Light", "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.project-thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding-left: 76px;
+}
+
+.project-thumb {
+  display: grid;
+  gap: 9px;
+  min-width: 0;
+}
+
+.project-thumb img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #ddd7cf;
+}
+
+.project-thumb span {
+  color: var(--ink);
+  font-family: "PortfolioBodyLight", "方正兰亭黑Pro Global", "PingFang SC", sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.35;
+}
+
 .portfolio-scroll {
   background: var(--paper-soft);
+}
+
+body.is-directory-mode .portfolio-scroll {
+  display: none;
+}
+
+body.is-project-mode .home-hero,
+body.is-project-mode #about,
+body.is-project-mode #contents {
+  display: none;
+}
+
+.work-hidden {
+  display: none;
+}
+
+.spread img:not([src]) {
+  opacity: 0;
+}
+
+.back-to-directory {
+  position: fixed;
+  left: 26px;
+  bottom: 24px;
+  z-index: 40;
+  display: none;
+  border: 1px solid rgba(24, 21, 18, 0.13);
+  border-radius: 999px;
+  padding: 11px 18px 12px;
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(247, 244, 238, 0.72));
+  backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: 0 8px 24px rgba(24, 21, 18, 0.08);
+  font-size: 13px;
+}
+
+body.is-project-mode .back-to-directory,
+body.is-project-mode .quick-index {
+  display: block;
+}
+
+body.is-directory-mode .quick-index {
+  display: none;
 }
 
 .chapter-cover {
@@ -877,6 +1022,15 @@ a {
     gap: 52px;
   }
 
+  .chapter-directory {
+    gap: 42px;
+  }
+
+  .project-thumb-grid {
+    padding-left: 56px;
+    gap: 14px;
+  }
+
   .contents-list a {
     grid-template-columns: 42px 1fr;
     column-gap: 14px;
@@ -950,6 +1104,11 @@ a {
     right: 18px;
     bottom: 18px;
   }
+
+  .back-to-directory {
+    left: 18px;
+    bottom: 18px;
+  }
 }
 
 @media (max-width: 560px) {
@@ -1005,6 +1164,56 @@ a {
     padding: 22px 0 24px;
   }
 
+  .contents-hero {
+    min-height: auto;
+    padding: 94px 22px 56px;
+    gap: 38px;
+  }
+
+  .contents-title h2 {
+    font-size: 32px;
+  }
+
+  .chapter-directory {
+    gap: 36px;
+  }
+
+  .view-all-projects {
+    padding: 10px 16px 11px;
+  }
+
+  .chapter-group {
+    gap: 14px;
+    padding-top: 22px;
+  }
+
+  .chapter-link {
+    grid-template-columns: 34px 1fr;
+    column-gap: 12px;
+  }
+
+  .chapter-link strong {
+    font-size: 23px;
+  }
+
+  .chapter-link small {
+    font-size: 9px;
+  }
+
+  .project-thumb-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px 10px;
+    padding-left: 46px;
+  }
+
+  .project-thumb {
+    gap: 7px;
+  }
+
+  .project-thumb span {
+    font-size: 10px;
+  }
+
   .contents-list .subtitle {
     line-height: 1.45;
   }
@@ -1055,6 +1264,13 @@ a {
   .quick-index {
     right: 14px;
     bottom: 14px;
+  }
+
+  .back-to-directory {
+    left: 14px;
+    bottom: 14px;
+    padding: 9px 14px 10px;
+    font-size: 12px;
   }
 
   .quick-index-toggle {

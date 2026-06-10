@@ -1,7 +1,92 @@
-const revealTargets = document.querySelectorAll(
-  ".chapter-cover, .project-sequence, .spread, .text-page"
-);
+const chapters = [
+  {
+    id: "chapter-01",
+    cover: "chapter-01",
+    firstProject: "olay-white-bottle",
+    projects: ["olay-white-bottle", "olay-agile-testing", "olay-v", "romano"],
+  },
+  {
+    id: "chapter-02",
+    cover: "chapter-02",
+    firstProject: "grain-rain",
+    projects: ["grain-rain", "olay-cny", "ecommerce-ued", "prox-detail", "mentholatum", "members-mark"],
+  },
+  {
+    id: "chapter-03",
+    cover: "chapter-03",
+    firstProject: "olay-35",
+    projects: ["olay-35", "timson-c", "liby", "mengniu"],
+  },
+  {
+    id: "chapter-04",
+    cover: "chapter-04",
+    firstProject: "olay-gift-box",
+    projects: ["olay-gift-box", "olay-mothers-day", "urban-hunter", "chimelong"],
+  },
+];
+
+const projectToChapter = new Map();
+const coverToChapter = new Map();
+const firstProjectByChapter = new Map();
+
+chapters.forEach((chapter) => {
+  coverToChapter.set(chapter.cover, chapter.id);
+  firstProjectByChapter.set(chapter.id, chapter.firstProject);
+  chapter.projects.forEach((projectId) => {
+    projectToChapter.set(projectId, chapter.id);
+    const project = document.getElementById(projectId);
+    if (project) project.dataset.chapter = chapter.id;
+  });
+
+  const cover = document.getElementById(chapter.cover);
+  if (cover) cover.dataset.chapter = chapter.id;
+});
+
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const quickIndex = document.querySelector(".quick-index");
+const quickIndexToggle = document.querySelector(".quick-index-toggle");
+const navMenu = document.querySelector(".nav-menu");
+const navMenuToggle = document.querySelector(".nav-menu-toggle");
+const siteHeader = document.querySelector(".site-header");
+const works = document.getElementById("works");
+const workItems = document.querySelectorAll(".chapter-cover, .project-sequence");
+const deferredImages = document.querySelectorAll("img[data-src]");
+
+function hydrateImage(image) {
+  if (!image || image.getAttribute("src")) return;
+  image.setAttribute("src", image.dataset.src);
+}
+
+function hydrateScope(scope) {
+  if (!scope) return;
+  scope.querySelectorAll("img[data-src]").forEach(hydrateImage);
+  scope.querySelectorAll("video[data-src]").forEach((video) => {
+    if (video.getAttribute("src")) return;
+    video.setAttribute("src", video.dataset.src);
+    video.load();
+  });
+}
+
+if ("IntersectionObserver" in window) {
+  const imageObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        hydrateImage(entry.target);
+        imageObserver.unobserve(entry.target);
+      });
+    },
+    { rootMargin: "900px 0px", threshold: 0.01 }
+  );
+
+  deferredImages.forEach((image) => imageObserver.observe(image));
+} else {
+  deferredImages.forEach(hydrateImage);
+}
+
+const revealTargets = document.querySelectorAll(
+  ".chapter-cover, .project-sequence, .spread, .text-page, .chapter-group, .project-thumb"
+);
 
 revealTargets.forEach((target) => target.classList.add("reveal"));
 
@@ -15,7 +100,7 @@ if ("IntersectionObserver" in window && !prefersReducedMotion.matches) {
         }
       });
     },
-    { threshold: 0.12 }
+    { threshold: 0.08 }
   );
 
   revealTargets.forEach((target) => revealObserver.observe(target));
@@ -23,30 +108,97 @@ if ("IntersectionObserver" in window && !prefersReducedMotion.matches) {
   revealTargets.forEach((target) => target.classList.add("is-visible"));
 }
 
-const quickIndex = document.querySelector(".quick-index");
-const quickIndexToggle = document.querySelector(".quick-index-toggle");
-const navMenu = document.querySelector(".nav-menu");
-const navMenuToggle = document.querySelector(".nav-menu-toggle");
-const siteHeader = document.querySelector(".site-header");
+function setDirectoryMode() {
+  document.body.classList.add("is-directory-mode");
+  document.body.classList.remove("is-project-mode", "is-all-projects-mode");
+  workItems.forEach((item) => item.classList.remove("work-hidden"));
+  closeMenus();
+  syncHeaderTheme();
+}
+
+function setAllProjectsMode() {
+  document.body.classList.remove("is-directory-mode");
+  document.body.classList.add("is-project-mode", "is-all-projects-mode");
+  workItems.forEach((item) => item.classList.remove("work-hidden"));
+  hydrateScope(document.getElementById("chapter-01"));
+  hydrateScope(document.getElementById("olay-white-bottle"));
+  closeMenus();
+  syncHeaderTheme();
+}
+
+function setChapterMode(chapterId) {
+  document.body.classList.remove("is-directory-mode", "is-all-projects-mode");
+  document.body.classList.add("is-project-mode");
+
+  workItems.forEach((item) => {
+    const isProjectInChapter = item.classList.contains("project-sequence") && item.dataset.chapter === chapterId;
+    item.classList.toggle("work-hidden", !isProjectInChapter);
+  });
+
+  chapters
+    .find((chapter) => chapter.id === chapterId)
+    ?.projects.forEach((projectId) => hydrateScope(document.getElementById(projectId)));
+
+  closeMenus();
+  syncHeaderTheme();
+}
+
+function modeForTarget(targetId) {
+  if (projectToChapter.has(targetId)) {
+    return { mode: "chapter", chapterId: projectToChapter.get(targetId), scrollId: targetId };
+  }
+
+  if (coverToChapter.has(targetId)) {
+    const chapterId = coverToChapter.get(targetId);
+    return { mode: "chapter", chapterId, scrollId: firstProjectByChapter.get(chapterId) };
+  }
+
+  if (targetId === "works") {
+    return { mode: "all", scrollId: "works" };
+  }
+
+  return { mode: "directory", scrollId: targetId || "contents" };
+}
+
+function navigateTo(targetId, shouldPushState = true) {
+  const route = modeForTarget(targetId);
+
+  if (route.mode === "all") {
+    setAllProjectsMode();
+  } else if (route.mode === "chapter") {
+    setChapterMode(route.chapterId);
+  } else {
+    setDirectoryMode();
+  }
+
+  const scrollTarget = document.getElementById(route.scrollId);
+  if (scrollTarget) {
+    glideTo(scrollTarget);
+  }
+
+  if (shouldPushState) {
+    history.pushState(null, "", `#${route.scrollId}`);
+  }
+}
 
 document.querySelectorAll('a[href^="#"]').forEach((link) => {
   link.addEventListener("click", (event) => {
-    const targetId = link.getAttribute("href");
-    if (!targetId || targetId === "#") return;
+    const targetId = link.getAttribute("href")?.slice(1);
+    if (!targetId) return;
 
-    const target = document.querySelector(targetId);
-    if (!target) return;
+    const target = document.getElementById(targetId);
+    if (!target && targetId !== "works") return;
 
     event.preventDefault();
-    glideTo(target);
-    history.pushState(null, "", targetId);
+    navigateTo(targetId);
   });
 });
 
 function glideTo(target) {
   const current = window.scrollY;
   const targetTop = target.getBoundingClientRect().top + current;
-  const noOffset = target.classList.contains("text-page") || target.classList.contains("chapter-cover");
+  const isProjectMode = document.body.classList.contains("is-project-mode");
+  const noOffset = target.classList.contains("text-page") || target.classList.contains("chapter-cover") || isProjectMode;
   const finalTop = Math.max(0, targetTop - (noOffset ? 0 : 64));
   if (prefersReducedMotion.matches) {
     window.scrollTo(0, finalTop);
@@ -101,7 +253,7 @@ if ("IntersectionObserver" in window) {
   const videoOpenObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+        if (!entry.isIntersecting || entry.target.classList.contains("work-hidden")) return;
 
         const combo = entry.target;
         const video = combo.querySelector("video");
@@ -130,6 +282,7 @@ function syncHeaderTheme() {
 
   const probeY = Math.min(120, window.innerHeight * 0.18);
   const isDark = Array.from(darkSections).some((section) => {
+    if (section.classList.contains("work-hidden")) return false;
     const rect = section.getBoundingClientRect();
     return rect.top <= probeY && rect.bottom >= probeY;
   });
@@ -139,7 +292,6 @@ function syncHeaderTheme() {
 
 window.addEventListener("scroll", syncHeaderTheme, { passive: true });
 window.addEventListener("resize", syncHeaderTheme);
-syncHeaderTheme();
 
 function closeMenus() {
   if (navMenu && navMenuToggle) {
@@ -200,3 +352,19 @@ document.addEventListener("keydown", (event) => {
     closeMenus();
   }
 });
+
+window.addEventListener("popstate", () => {
+  const targetId = location.hash.slice(1);
+  if (targetId) {
+    navigateTo(targetId, false);
+  } else {
+    setDirectoryMode();
+    window.scrollTo(0, 0);
+  }
+});
+
+if (location.hash) {
+  navigateTo(location.hash.slice(1), false);
+} else {
+  setDirectoryMode();
+}
